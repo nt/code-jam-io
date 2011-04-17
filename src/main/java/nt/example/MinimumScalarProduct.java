@@ -9,6 +9,9 @@ import nt.Case;
 import nt.Problem;
 import nt.utils.VI;
 
+/*
+ * http://code.google.com/codejam/contest/dashboard?c=32016#s=p0
+ */
 public class MinimumScalarProduct extends Problem<MSPCase> {
 
 	public MinimumScalarProduct() throws NumberFormatException, FileNotFoundException, IOException {
