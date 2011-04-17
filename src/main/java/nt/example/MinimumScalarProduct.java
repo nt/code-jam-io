@@ -1,41 +1,26 @@
 package nt.example;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collections;
 
-import nt.Case;
 import nt.Problem;
 import nt.utils.VI;
 
 /*
  * http://code.google.com/codejam/contest/dashboard?c=32016#s=p0
  */
-public class MinimumScalarProduct extends Problem<MSPCase> {
+public class MinimumScalarProduct extends Problem {
 
 	public MinimumScalarProduct() throws NumberFormatException, FileNotFoundException, IOException {
 		super();
 	}
 
-	@Override
-	public MSPCase buildCase(BufferedReader reader) throws Exception {
-		MSPCase c = new MSPCase();
-		c.N = nextInt();
-		c.x = nextVI();
-		c.y = nextVI();
-		return c;
-	}
-
 	public static void main(String[] args) throws Exception{
-		
 		Problem p = new MinimumScalarProduct();
-		p.solve();
+		p.solve_all();
 	}
-	
-}
 
-class MSPCase extends Case {
 
 	VI x;
 	VI y;
@@ -43,12 +28,13 @@ class MSPCase extends Case {
 	
 	@Override
 	public Object solve() throws Exception {
-		// TODO Auto-generated method stub
+		N = nextInt();
+		x = nextVI();
+		y = nextVI();
 		Collections.sort(x);
 		Collections.sort(y);
 		Collections.reverse(y);
 		return x.scalar(y).toString();
-		
 	}
 	
 }

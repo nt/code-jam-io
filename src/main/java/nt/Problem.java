@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 
 import nt.utils.VI;
 
-public abstract class Problem<T extends Case> {
+public abstract class Problem {
 
 	/*
 	 * Nomber of test cases
@@ -39,10 +39,9 @@ public abstract class Problem<T extends Case> {
 		N = Integer.valueOf(reader.readLine());
 	}
 	
-	public void solve() throws Exception {
+	public void solve_all() throws Exception {
 		for(int i=0;i<N;i++) {
-			T c = buildCase(reader);
-			String s = "Case #"+Integer.toString(i+1)+": "+c.solve();
+			String s = "Case #"+Integer.toString(i+1)+": "+solve();
 			System.out.println(s);
 			writer.write(s);
 			writer.write("\n");
@@ -50,8 +49,6 @@ public abstract class Problem<T extends Case> {
 		writer.close();
 		reader.close();
 	}
-
-	public abstract T buildCase(BufferedReader reader) throws Exception;
 
 	protected int nextInt() throws NumberFormatException, IOException {
 		return Integer.valueOf(reader.readLine());
@@ -66,5 +63,10 @@ public abstract class Problem<T extends Case> {
 		return vector;
 	}
 	
+	public abstract Object solve() throws Exception;
+	
+	protected void p(Object o) {
+		System.out.println(o);
+	}
 	
 }
