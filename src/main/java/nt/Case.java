@@ -3,6 +3,10 @@ package nt;
 
 public abstract class Case {
 	
-	public abstract String solve() throws Exception;
+	public abstract Object solve() throws Exception;
+	
+	protected void p(Object o) {
+		System.out.println(o);
+	}
 	
 }

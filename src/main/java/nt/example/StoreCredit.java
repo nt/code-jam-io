@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import nt.Case;
@@ -26,12 +25,9 @@ public class StoreCredit extends Problem<StoreCase> {
 	@Override
 	public StoreCase buildCase(BufferedReader reader) throws NumberFormatException, IOException {
 		StoreCase c = new StoreCase();
-		c.C = Integer.valueOf(reader.readLine());
-		c.I = Integer.valueOf(reader.readLine());
-		c.prices = new ArrayList<Integer>(c.I);
-		for(String s:reader.readLine().split(" ")) {
-			c.prices.add(Integer.valueOf(s));
-		}
+		c.C = nextInt();
+		c.I = nextInt();
+		c.prices = nextVI();
 		return c;
 	}
 	
