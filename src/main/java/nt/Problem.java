@@ -49,9 +49,17 @@ public abstract class Problem {
 		writer.close();
 		reader.close();
 	}
-
+	
 	protected int nextInt() throws NumberFormatException, IOException {
 		return Integer.valueOf(reader.readLine());
+	}
+	
+	protected String nextString() throws IOException {
+		return reader.readLine();
+	}
+	
+	protected char nextChar() throws IOException {
+		return (char) reader.read();
 	}
 	
 	protected VI nextVI() throws IOException {
@@ -66,6 +74,37 @@ public abstract class Problem {
 	public abstract Object solve() throws Exception;
 	
 	protected void p(Object o) {
+		if(o instanceof byte[][]) {
+			byte[][] t = (byte[][]) o;
+			for(int i=0;i<t.length;i++){
+				for(int j=0;j<t[0].length;j++) {
+					System.out.print(t[i][j]);
+				}
+				System.out.println();
+			}
+			return;
+		}
+		if(o instanceof boolean[][]) {
+			boolean[][] t = (boolean[][]) o;
+			for(int i=0;i<t.length;i++){
+				for(int j=0;j<t[0].length;j++) {
+					if(t[i][j]) System.out.print(1);
+					else System.out.print(0);
+				}
+				System.out.println();
+			}
+			return;
+		}
+		if(o instanceof int[][]) {
+			int[][] t = (int[][]) o;
+			for(int i=0;i<t.length;i++){
+				for(int j=0;j<t[0].length;j++) {
+					System.out.print(t[i][j]+ " ");
+				}
+				System.out.println();
+			}
+			return;
+		}
 		System.out.println(o);
 	}
 	
