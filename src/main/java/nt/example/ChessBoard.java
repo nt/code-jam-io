@@ -2,11 +2,13 @@ package nt.example;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.PriorityQueue;
 
 import nt.Problem;
 import nt.utils.ArrayUtils;
 import nt.utils.VI;
 
+import static java.lang.Math.*;
 /*
  * http://code.google.com/codejam/contest/dashboard?c=619102#s=p2
  */
@@ -21,15 +23,13 @@ public class ChessBoard extends Problem {
 		new ChessBoard().solve();
 	}
 	
-
-
-	int[][] left;
-	int[][] top;
 	int[][] corner;
 	boolean[][] table;
 	
 	int M;
 	int N;
+	
+	PriorityQueue<Board> boards;
 	
 	@Override
 	public Object solve() throws Exception {
@@ -38,8 +38,6 @@ public class ChessBoard extends Problem {
 		M = v.get(0);
 		N = v.get(1);
 		
-		left = ArrayUtils.newArray(M, N, 0);
-		top = ArrayUtils.newArray(M, N, 0);
 		corner = ArrayUtils.newArray(M, N, 0);
 		
 		table = new boolean[M][N];
@@ -59,123 +57,93 @@ public class ChessBoard extends Problem {
 		p(table);
 		p("----");
 		
-		for(int i=0;i<M;i++) {
-			left[i][0] = 1;
-			for(int j=1;j<N;j++) {
-				if(table[i][j] ^ table[i][j-1] == true) left[i][j] = left[i][j-1] + 1;
-				else left[i][j] = 1;
-			}
-		}
-		
-		//p(left);
-		
-		for(int j=0;j<N;j++) {
-			top[0][j] = 1;
-			for(int i=1;i<M;i++) {
-				if(table[i][j] ^ table[i-1][j] == true) top[i][j] = top[i-1][j] + 1;
-				else top[i][j] = 1;
-			}
-		}
-		
-//		p(top);
-		
-//		corner[0][0] = 1;
-		for(int i=0;i<M; i++) {
+		for(int i=0;i<M; i++){
 			corner[i][0] = 1;
 		}
 		
-		for(int j=0;j<N;j++) {
+		for(int j=0;j<N;j++){
 			corner[0][j] = 1;
 		}
 		
-		calculateCorner();
+		for(int i=1;i<M; i++) {
+			for(int j=1;j<N;j++) {
+				if((table[i][j]==table[i-1][j-1])
+						&& (table[i][j-1]==table[i-1][j])
+						&& (table[i][j] ^ table[i-1][j])){
+					corner[i][j] = min(corner[i-1][j-1], min(corner[i-1][j], corner[i][j-1])) + 1;
+				}
+				else
+					corner[i][j] = 1;
+			}
+		}
+
+		boards = new PriorityQueue<Board>(N*M);
+		for(int i=0;i<M; i++){
+			for(int j=0;j<N;j++){
+				boards.add(new Board(j, i));
+			}
+		}
 		
-//		p(corner);
-		
-		int[] boards = new int[Math.min(M, N)];
-		for(int i=0;i<boards.length;i++) boards[i] = 0;
-		
+		int[] out = new int[Math.min(M, N)];
+		for(int i=0;i<out.length;i++) out[i] = 0;
 
 		int nb = 0;
 		
-		while(!isEmpty()) {
+		
+		while(boards.peek()!=null) {
+
+			Board b = boards.poll();
+			if(b.size()==0) continue;
 			p(corner);
-			p("---");
-			int i = nextBiggestI();
-			int j = nextBiggestJ();
-			int size = corner[i][j];
-			remove(i, j, size);
-			if(boards[size] == 0) nb++;
-			boards[size]++;
+			p("Removing "+b);
+			
+			if(out[b.size()]==0) nb++;
+			out[b.size()]++;
+			
+			for(int i=b.tx();i<=min(b.x+b.size(), N);i++) {
+				for(int j=b.ty();j<=min(b.y+b.size(),M);j++) {
+					corner[i][j] = max(0, min(min(j-b.x,corner[i][j]), min(i-b.y,corner[i][j])));
+				}
+			}
+			
 		}
 		
 		
-		for(int i=boards.length-1;i>=0;i--) {
-			if(boards[i]!=0) p(i+" "+boards[i]);
+		for(int i=out.length-1;i>=0;i--) {
+			if(out[i]!=0) p(i+" "+out[i]);
 		}
 		
 		return nb;
 	}
+	
+	class Board implements Comparable<Board> {
+		public Board(int x, int y) {
+			super();
+			this.x = x;
+			this.y = y;
+		}
 
-	int nextBiggestI() {
-		int tmp_i = 0, tmp_j =0;
-		int biggest = 0;
-		for(int i=0;i<M; i++) {
-			for(int j=0;j<N;j++) {
-				if(corner[i][j]>biggest){
-					tmp_i = i;
-					tmp_j = j;
-					biggest = corner[i][j];
-				}
-			}
-		}
-		return tmp_i;
-	}
-	
-	int nextBiggestJ() {
-		int tmp_i = 0, tmp_j =0;
-		int biggest = 0;
-		for(int i=0;i<M; i++) {
-			for(int j=0;j<N;j++) {
-				if(corner[i][j]>biggest){
-					tmp_i = i;
-					tmp_j = j;
-					biggest = corner[i][j];
-				}
-			}
-		}
-		return tmp_j;
-	}
-	
-	boolean isEmpty() {
-		for(int i=0;i<M; i++) {
-			for(int j=0;j<N;j++) {
-				if(corner[i][j]!=0) return false;
-			}
+		public int x;
+		public int y;
+		
+		int size() { return corner[y][x]; }
+		
+		@Override
+		public int compareTo(Board o) {
+			if(size()!=o.size()) return o.size()-size();
+			if(y!=o.y) return o.y-y;
+			return o.x-x;
 		}
 		
-		return true;
-	}
-	
-	void remove(int x, int y, int size) {
-		for(int i=0;i<size;i++) for(int j=0;j<size;j++) {
-			corner[x-i][y-j] = 0;
-			top[x-i][y-j] = 0;
-			left[x-i][y-j] = 0;
-		}
-		for(int i=0;i<size;i++) top[x-i][y] = 1;
-		for(int j=0;j<size;j++) left[x][y-j] = 1;
-		calculateCorner();
-	}
-	
-	void calculateCorner() {
-		for(int i=1;i<M; i++) {
-			for(int j=1;j<N;j++) {
-				if(table[i][j] ^ table[i-1][j-1]) {
-					corner[i][j] = 1;
-				}
-				corner[i][j] = Math.min(corner[i-1][j-1]+1, Math.min(left[i][j], top[i][j]));
-			}
+		int tx(){ return x-size()+1;}
+		int ty(){ return y-size()+1;}
+
+		@Override
+		public String toString() {
+			return "x["+tx()+".."+x+"] y["+ty()+".."+y+"] size["+size()+"]";
 		}
 	}
+
 }
+
+

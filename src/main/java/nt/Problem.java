@@ -107,5 +107,5 @@ public abstract class Problem {
 		}
 		System.out.println(o);
 	}
-	
+
 }
