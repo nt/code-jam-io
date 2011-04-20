@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import nt.utils.VI;
 
@@ -39,15 +40,22 @@ public abstract class Problem {
 		N = Integer.valueOf(reader.readLine());
 	}
 	
+	protected int current_pb_nb;
+	
 	public void solve_all() throws Exception {
-		for(int i=0;i<N;i++) {
-			String s = "Case #"+Integer.toString(i+1)+": "+solve();
-			System.out.println(s);
-			writer.write(s);
-			writer.write("\n");
+		for(current_pb_nb=0;current_pb_nb<N;current_pb_nb++) {
+			Object p = solve();
+			if(p==null) continue;
+			String s = "Case #"+Integer.toString(current_pb_nb+1)+": "+p;
+			out(s);
 		}
 		writer.close();
 		reader.close();
+	}
+	
+	public void out(String s) throws Exception {
+		writer.write(s+"\n");
+		System.out.println(s);
 	}
 	
 	protected int nextInt() throws NumberFormatException, IOException {
