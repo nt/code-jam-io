@@ -21,7 +21,6 @@ public class MinimumScalarProduct extends Problem {
 		p.solve_all();
 	}
 
-
 	VI x;
 	VI y;
 	int N;
